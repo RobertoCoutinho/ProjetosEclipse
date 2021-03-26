@@ -25,4 +25,7 @@
     <fullyQualifiedTypeName name="com.google.gson.stream.JsonReader"/>
     <fullyQualifiedTypeName name="java.io.StringReader"/>
     <fullyQualifiedTypeName name="java.lang.String"/>
+    <fullyQualifiedTypeName name="servidor.BancoDespachante"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="org.graalvm.compiler.lir.alloc.trace.ShadowedRegisterValue"/>
 </qualifiedTypeNameHistroy>
