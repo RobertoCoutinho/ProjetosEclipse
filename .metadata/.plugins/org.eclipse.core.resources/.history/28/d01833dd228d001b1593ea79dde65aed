@@ -1,0 +1,81 @@
+package servidor;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+
+public class TCPServer {
+	public static void main(String args[]) {
+		AddressBookDespachante despachante = new AddressBookDespachante();
+		DatagramSocket aSocket = null;
+		try {
+			aSocket = new DatagramSocket(7896);
+			// create socket at agreed port
+			byte[] buffer = new byte[1000];
+			while (true) {
+				DatagramPacket request = new DatagramPacket(buffer, buffer.length);
+				aSocket.receive(request);
+				DatagramPacket reply = new DatagramPacket(request.getData(), request.getLength(), request.getAddress(),
+						request.getPort());
+				aSocket.send(reply);
+			}
+		} catch (SocketException e) {
+			System.out.println("Socket: " + e.getMessage());
+		} catch (IOException e) {
+			System.out.println("IO: " + e.getMessage());
+		} finally {
+			if (aSocket != null)
+				aSocket.close();
+		}
+
+	
+
+	public Connection(Socket aClientSocket) {
+		try {
+			despachante = new AddressBookDespachante();
+			clientSocket = aClientSocket;
+			System.out.println("conectado a " + clientSocket.getInetAddress() + ":" + clientSocket.getPort());
+			in = new DataInputStream(clientSocket.getInputStream());
+			out = new DataOutputStream(clientSocket.getOutputStream());
+			this.start();
+		} catch (IOException e) {
+			System.out.println("Connection:" + e.getMessage());
+		}
+	}
+
+	public byte[] getRequest() {
+		// enviado via moodle
+	}
+
+	public Message desempacotaRequisicao(byte[] array) {
+		// Desempacota mensagem de requisicao
+	}
+
+	public byte[] empacotaResposta(byte[] resultado, int requestId) {
+		// Empacota mensagem de resposta
+	}
+
+	public void sendReply(byte[] resposta) {
+		// enviado via moodle
+	}
+
+	public void run() {
+		// Loop para intergair com socket client - TCP Permanente
+		while (clientSocket.isConnected()) {
+			Message requisicao = desempacotaRequisicao(getRequest());
+			byte[] resultado = despachante.selecionaEqueleto(requisicao);
+			sendReply(empacotaResposta(resultado, requisicao.getRequestId()));
+		}
+		try {
+			clientSocket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

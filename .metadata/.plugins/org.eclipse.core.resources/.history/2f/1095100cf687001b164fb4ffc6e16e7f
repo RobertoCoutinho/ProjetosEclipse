@@ -1,0 +1,15 @@
+package cliente;
+
+class Mensagem{//classe com as informações da mensagem a ser empacotada
+	int messageType;
+	public int requestId;
+	public String objectRef;
+	public String method;
+	public byte [] agrs;
+	
+	public Mensagem(String objectRef, String method, byte[] args){
+		this.objectRef = objectRef;
+		this.method = method;
+		this.agrs = args;
+	}
+}

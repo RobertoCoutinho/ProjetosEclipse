@@ -1,0 +1,29 @@
+package servidor;
+
+public class ContaEsqueleto {
+
+	BancoServente servente;
+
+	public ContaEsqueleto() {
+		servente = new BancoServente();
+	}
+
+	public void novaConta (Byte [] args) {
+		System.out.println("deu certo");
+		// (1) Desempacota argumento de entrada
+		// (2) chama o metodo do servente
+		// (3) empacota resposta do método servente e retorna
+	}
+
+	public byte[] list(ByteString args) {
+		// (1) Desempacota argumento de entrada
+		// (2) chama o metodo do servente
+		// (3) empacota resposta do método servente e retorna
+	}
+
+	public byte[] remove(ByteString args) {
+		// (1) Desempacota argumento de entrada
+		// (2) chama o metodo do servente
+		// (3) empacota resposta do método servente e retorna
+	}
+}

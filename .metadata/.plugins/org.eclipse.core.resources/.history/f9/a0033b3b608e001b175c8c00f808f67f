@@ -1,0 +1,28 @@
+package servidor;
+
+public class addressBookEsqueleto {
+
+	BancoServente servente;
+
+	public addressBookEsqueleto() {
+		servente = new BancoServente();
+	}
+
+	public void addPerson(Byte [] args) {
+		// (1) Desempacota argumento de entrada
+		// (2) chama o metodo do servente
+		// (3) empacota resposta do método servente e retorna
+	}
+
+	public byte[] list(ByteString args) {
+		// (1) Desempacota argumento de entrada
+		// (2) chama o metodo do servente
+		// (3) empacota resposta do método servente e retorna
+	}
+
+	public byte[] remove(ByteString args) {
+		// (1) Desempacota argumento de entrada
+		// (2) chama o metodo do servente
+		// (3) empacota resposta do método servente e retorna
+	}
+}

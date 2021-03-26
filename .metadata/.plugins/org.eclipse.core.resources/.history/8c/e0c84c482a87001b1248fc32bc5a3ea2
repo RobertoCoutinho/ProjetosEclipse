@@ -1,0 +1,71 @@
+package cliente;
+
+public class Mensagens {
+//classes que serão trocadas entre o cliente e servidor, coloquei todas
+//no mesmo arquivo somente para enviar, no projeto estão em locais diferentes. 
+	
+	
+	//classe que representa a conta.
+	public class Conta {
+
+		protected String numConta;
+		protected String nomeCliente;
+		protected String cpf;
+		protected String tipoConta; // tipo de conta
+		protected String senha;
+		protected float saldo;
+
+		public Conta() { // construtor
+			saldo = 0;
+		}
+
+		public void setNumConta(String numConta) {
+			this.numConta = numConta;
+		}
+
+		public String getNomeCliente() {
+			return nomeCliente;
+		}
+
+		public void setNomeCliente(String nomeCliente) {
+			this.nomeCliente = nomeCliente;
+		}
+
+		public void setCpf(String cpf) {
+			this.cpf = cpf;
+		}
+
+		public void setSenha(String senha) {
+			this.senha = senha;
+		}
+
+		public void setTipoConta(String tipoConta) {
+			this.tipoConta = tipoConta;
+		}
+
+	}
+	
+	//classe que recebe as informações da mensagem, foi usada para poder empacotar
+	//a mensagem no formato json
+	class Mensagem{
+		public String objectRef;
+		public String method;
+		public byte [] agrs;
+		
+		
+		public void setObjectRef(String objectRef) {
+			this.objectRef = objectRef;
+		}
+
+
+		public void setMethod(String method) {
+			this.method = method;
+		}
+
+
+		public void setAgrs(byte[] agrs) {
+			this.agrs = agrs;
+		}
+		
+	}
+}

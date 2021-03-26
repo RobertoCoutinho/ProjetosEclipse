@@ -1,0 +1,16 @@
+package servidor;
+
+import java.util.ArrayList;
+
+public class BancoServente {
+	
+	// Essa é classe que REALMENTE implementa o serviço.
+	ArrayList<Conta> contas;
+
+	public void novaConta(Conta conta) {
+		System.out.println("conta cadastrada");
+		System.out.println(conta.getNomeCliente());
+		contas.add(conta);
+		
+	}
+}
