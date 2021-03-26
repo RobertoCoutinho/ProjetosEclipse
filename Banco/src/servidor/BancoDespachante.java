@@ -15,7 +15,7 @@ public class BancoDespachante {
 			String methodName = request.getMethod();
 			System.out.println("Executando: " + methodName);
 			method = objRef.getMethod(methodName, byte[].class);
-			method.invoke(objRef.newInstance(),
+			resposta = (byte[]) method.invoke(objRef.newInstance(),
 					request.getArgs());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

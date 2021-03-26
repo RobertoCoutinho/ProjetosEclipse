@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
@@ -18,6 +19,7 @@ import servidor.Mensagem;
 public class UDPServer {
 
 	static DatagramSocket aSocket = null;
+	static Gson gson = new Gson();
 
 	public static void main(String args[]) {
 		BancoDespachante despachante = new BancoDespachante();
@@ -30,7 +32,11 @@ public class UDPServer {
 				DatagramPacket request = new DatagramPacket(buffer, buffer.length);
 				aSocket.receive(request);
 				Mensagem requisicao = desempacotaRequisicao(request.getData());
-				despachante.selecionaEqueleto(requisicao);
+				byte[] resultado = despachante.selecionaEqueleto(requisicao);
+				byte[] resultadoEmpac = empacotaResposta(resultado, requisicao.getRequestId());
+				DatagramPacket reply = new DatagramPacket(resultadoEmpac, resultadoEmpac.length, 
+	    		request.getAddress(), request.getPort());
+	    		aSocket.send(reply);
 				// DatagramPacket reply = new DatagramPacket(request.getData(),
 				// request.getLength(), request.getAddress(),
 				// request.getPort());
@@ -54,18 +60,25 @@ public class UDPServer {
 
 	public static Mensagem desempacotaRequisicao(byte[] array) {
 		// Desempacota mensagem de requisicao
-		Gson gson = new Gson();
-		String str = new String(array, java.nio.charset.StandardCharsets.UTF_8);
 		
+		String str = new String(array, java.nio.charset.StandardCharsets.UTF_8);
+
 		JsonReader reader = new JsonReader(new StringReader(str));
 		reader.setLenient(true);
 		Mensagem obj = gson.fromJson(reader, Mensagem.class);
 		return obj;
 	}
 
-	// public byte[] empacotaResposta(byte[] resultado, int requestId) {
-	// Empacota mensagem de resposta
-	// }
+	public static byte[] empacotaResposta(byte[] resultado, int requestId) throws UnsupportedEncodingException {
+		// Empacota mensagem de resposta
+		Mensagem msg = new Mensagem();
+		msg.setMessageType(1);
+		msg.setRequestId(requestId);
+		msg.setArgs(resultado);
+		String msgJson = gson.toJson(msg);
+		byte[] msgEmpac = msgJson.toString().getBytes("utf-8");
+		return msgEmpac;
+	}
 
 	// public void sendReply(byte[] resposta) {
 	// enviado via moodle

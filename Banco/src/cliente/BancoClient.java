@@ -30,7 +30,8 @@ public class BancoClient {
 			conta.setTipoConta(ler.next());
 			System.out.println("Senha da conta");
 			conta.setSenha(ler.next());
-			proxy.novaConta(conta);
+			String resultado = proxy.novaConta(conta);
+			System.out.println(resultado);
 			break;
 		case 2:
 			System.out.println("Numero de conta");

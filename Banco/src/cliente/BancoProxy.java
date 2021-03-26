@@ -1,9 +1,13 @@
 package cliente;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+
+import servidor.Mensagem;
 
 public class BancoProxy {
 	int contMessageId = 0;
@@ -18,10 +22,13 @@ public class BancoProxy {
 		String msg = gson.toJson(conta); // gera um json do objeto conta
 		byte[] msgEmpac = msg.toString().getBytes("utf-8"); // transforma a string do json em um byteArray
 		// (2) Chama doOperation
-		doOperation("Conta", "novaConta", msgEmpac);
+		byte resposta[] = doOperation("Conta", "novaConta", msgEmpac);
 		// (3) Desempacota argumento de resposta (retorno de doOperation)
+		String respostaJson = new String(resposta, java.nio.charset.StandardCharsets.UTF_8);
 		// (4) Retorna reposta desempacotada
-		return "aaa";
+		Object obj = new Object();
+		obj = gson.fromJson(respostaJson, obj.getClass());
+		return obj.toString();
 	}
 
 	public String consultarConta(String numConta) throws IOException {
@@ -30,24 +37,26 @@ public class BancoProxy {
 		doOperation("conta", "consultarConta", msgEmpac);
 		return "aaa";
 	}
-	
-	class InfoSaque{
+
+	class InfoSaque {
 		String numConta, senha;
 		float varlorSaque;
+
 		public void setNumConta(String numConta) {
 			this.numConta = numConta;
 		}
+
 		public void setSenha(String senha) {
 			this.senha = senha;
 		}
+
 		public void setVarlorSaque(float varlorSaque) {
 			this.varlorSaque = varlorSaque;
 		}
 	}
-	
+
 	public String realizarSaque(String numConta, String senha, float varlorSaque) throws IOException {
-		
-		
+
 		InfoSaque infoSaque = new InfoSaque();
 		infoSaque.setNumConta(numConta);
 		infoSaque.setSenha(senha);
@@ -66,10 +75,9 @@ public class BancoProxy {
 		udpClient.sendRequest(data);
 
 		// recebimento
-		// Message resposta = desempacotaMensagem(tcpClient.getReplay());
+		Mensagem resposta = desempacotaMensagem(udpClient.getReplay());
 
-		// return resposta.getArguments().toByteArray();
-		return args;
+		return resposta.getArgs();
 	}
 
 	public void finaliza() {
@@ -89,6 +97,18 @@ public class BancoProxy {
 		byte[] msgEmpac = msgJson.toString().getBytes("utf-8");
 		contMessageId++;
 		return msgEmpac;
+
+	}
+
+	private Mensagem desempacotaMensagem(byte[] resposta) {
+
+		// desempacota a mensagem de resposta
+		String str = new String(resposta, java.nio.charset.StandardCharsets.UTF_8);
+
+		JsonReader reader = new JsonReader(new StringReader(str));
+		reader.setLenient(true);
+		Mensagem obj = gson.fromJson(reader, Mensagem.class);
+		return obj;
 
 	}
 
