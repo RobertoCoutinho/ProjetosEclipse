@@ -35,7 +35,16 @@ public class BancoClient {
 			break;
 		case 2:
 			System.out.println("Numero de conta");
-			proxy.consultarConta(ler.next());
+			Conta resultadoConsulta = proxy.consultarConta(ler.next());
+			if(resultadoConsulta == null) {
+				System.out.println("Conta não encontrada");
+			}
+			else {
+				System.out.println("Numero: "+resultadoConsulta.getNumConta()+"\nNome: "+resultadoConsulta.getNomeCliente()+
+						"\nCPF: "+resultadoConsulta.getCpf()+"\nTipo: "+resultadoConsulta.getTipoConta()+
+						"\nSaldo: "+resultadoConsulta.getSaldo());
+			}
+			
 			break;
 
 		case 3:
@@ -45,7 +54,28 @@ public class BancoClient {
 			String senha = ler.next();
 			System.out.println("Valor do saque");
 			float valorSaque = ler.nextFloat();
-			proxy.realizarSaque(numConta, senha, valorSaque);
+			String resultadoSaque = proxy.realizarSaque(numConta, senha, valorSaque);
+			if(resultadoSaque == null) {
+				System.out.println("Informação errada");
+			}
+			else{
+				System.out.println("Novo saldo: "+resultadoSaque+" reais");
+			}
+			break;
+		case 4:
+			System.out.println("Numero da conta");
+			String numConta2 = ler.next();
+			System.out.println("Senha");
+			String senha2 = ler.next();
+			System.out.println("Valor do deposito");
+			float valorDeposito = ler.nextFloat();
+			String resultadoDeposito = proxy.realizarDeposito(numConta2, senha2, valorDeposito);
+			if(resultadoDeposito == null) {
+				System.out.println("Informação errada");
+			}
+			else{
+				System.out.println("Novo saldo: "+resultadoDeposito+" reais");
+			}
 			break;
 
 		case 0:
@@ -64,6 +94,7 @@ public class BancoClient {
 		System.out.println("1 - Abrir nova conta");
 		System.out.println("2 - Consultar conta");
 		System.out.println("3 - Realizar saque");
+		System.out.println("4 - Realizar deposito");
 		System.out.println("0 - Sair\n");
 	}
 

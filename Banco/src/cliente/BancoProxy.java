@@ -31,11 +31,20 @@ public class BancoProxy {
 		return obj.toString();
 	}
 
-	public String consultarConta(String numConta) throws IOException {
+	public Conta consultarConta(String numConta) throws IOException {
 		String msg = gson.toJson(numConta);
 		byte[] msgEmpac = msg.toString().getBytes("utf-8");
-		doOperation("conta", "consultarConta", msgEmpac);
-		return "aaa";
+		byte[] resposta = doOperation("Conta", "consultarConta", msgEmpac);
+
+		String respostaJson = new String(resposta, java.nio.charset.StandardCharsets.UTF_8);
+		// (4) Retorna reposta desempacotada
+		Object obj = new Object();
+		obj = gson.fromJson(respostaJson, obj.getClass());
+		if (obj == null) {
+			return null;
+		}
+		Conta conta = gson.fromJson(respostaJson, Conta.class);
+		return conta;
 	}
 
 	class InfoSaque {
@@ -63,8 +72,34 @@ public class BancoProxy {
 		infoSaque.setVarlorSaque(varlorSaque);
 		String msgJson = gson.toJson(infoSaque);
 		byte[] msgEmpac = msgJson.toString().getBytes("utf-8");
-		doOperation("conta", "realizarSaque", msgEmpac);
-		return "aaa";
+		byte[] resposta = doOperation("Conta", "realizarSaque", msgEmpac);
+		String respostaJson = new String(resposta, java.nio.charset.StandardCharsets.UTF_8);
+		// (4) Retorna reposta desempacotada
+		Object obj = new Object();
+		obj = gson.fromJson(respostaJson, obj.getClass());
+		if (obj == null) {
+			return null;
+		}
+		return obj.toString();
+	}
+	
+	public String realizarDeposito(String numConta, String senha, float varlorDeposito) throws IOException {
+
+		InfoSaque infoSaque = new InfoSaque();
+		infoSaque.setNumConta(numConta);
+		infoSaque.setSenha(senha);
+		infoSaque.setVarlorSaque(varlorDeposito);
+		String msgJson = gson.toJson(infoSaque);
+		byte[] msgEmpac = msgJson.toString().getBytes("utf-8");
+		byte[] resposta = doOperation("Conta", "realizarDeposito", msgEmpac);
+		String respostaJson = new String(resposta, java.nio.charset.StandardCharsets.UTF_8);
+		// (4) Retorna reposta desempacotada
+		Object obj = new Object();
+		obj = gson.fromJson(respostaJson, obj.getClass());
+		if (obj == null) {
+			return null;
+		}
+		return obj.toString();
 	}
 
 	public byte[] doOperation(String objectRef, String method, byte[] args) throws IOException {
