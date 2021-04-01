@@ -34,7 +34,7 @@ public class BancoClient {
 			System.out.println(resultado);
 			break;
 		case 2:
-			System.out.println("Numero de conta");
+			System.out.println("Informacoes da conta");
 			Conta resultadoConsulta = proxy.consultarConta(ler.next());
 			if(resultadoConsulta == null) {
 				System.out.println("Conta não encontrada");
@@ -90,7 +90,7 @@ public class BancoClient {
 	}
 
 	public void printMenu() {
-		System.out.println("\nDigite o n# da operação que deseja executar: ");
+		System.out.println("\nDigite o numero da operação que deseja executar: ");
 		System.out.println("1 - Abrir nova conta");
 		System.out.println("2 - Consultar conta");
 		System.out.println("3 - Realizar saque");
