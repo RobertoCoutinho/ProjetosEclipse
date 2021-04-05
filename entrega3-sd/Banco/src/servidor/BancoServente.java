@@ -19,6 +19,7 @@ public class BancoServente {
 		for (Conta conta : contas) {
 
 			if (conta.getNumConta().equals(numConta)) {
+				// System.out.println("aqui");
 				return conta;
 			}
 		}
@@ -32,6 +33,7 @@ public class BancoServente {
 				conta.setSaldo(conta.getSaldo() - infoSaque.getVarlorSaque());
 				return conta.getSaldo() + "";
 			}
+			// System.out.println("aqui");
 		}
 		return null;
 	}
@@ -42,6 +44,7 @@ public class BancoServente {
 				conta.setSaldo(conta.getSaldo() + infoSaque.getVarlorSaque());
 				return conta.getSaldo() + "";
 			}
+			// System.out.println("aqui");
 		}
 		return null;
 	}

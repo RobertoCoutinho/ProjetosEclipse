@@ -8,25 +8,24 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 public class UDPClient {
-
+	
 	DatagramSocket aSocket = null;
 	InetAddress aHost;
 	int serverPort;
 
 	public UDPClient(String serverIP, int port) {
-		try {
-			aSocket = new DatagramSocket();
-			aHost = InetAddress.getByName(serverIP);
-			serverPort = port;
-		} catch (SocketException | UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+			try {
+				aSocket = new DatagramSocket();
+				aHost = InetAddress.getByName(serverIP);
+				serverPort = port;
+			} catch (SocketException | UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 	}
 
 	public void sendRequest(byte[] requisicao) {
@@ -42,15 +41,11 @@ public class UDPClient {
 
 	}
 
-	public byte[] getReplay() throws SocketTimeoutException {
+	public byte[] getReplay() {
 		byte[] buffer = new byte[1000];
 		DatagramPacket reply = new DatagramPacket(buffer, buffer.length);
 		try {
-			aSocket.setSoTimeout(1000);
 			aSocket.receive(reply);
-		} catch (SocketTimeoutException e1) {
-			// TODO Auto-generated catch block
-			throw new SocketTimeoutException();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -58,7 +53,7 @@ public class UDPClient {
 		return buffer;
 	}
 
-	public void finaliza() {
+	public void finaliza() { 
 		aSocket.close();
 	}
 

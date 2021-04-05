@@ -34,17 +34,17 @@ public class BancoClient {
 			System.out.println(resultado);
 			break;
 		case 2:
-			System.out.println("Numero da conta");
+			System.out.println("Informacoes da conta");
 			Conta resultadoConsulta = proxy.consultarConta(ler.next());
-			if (resultadoConsulta == null) {
+			if(resultadoConsulta == null) {
 				System.out.println("Conta não encontrada");
-			} else {
-				System.out.println("Informacoes da conta");
-				System.out.println("Numero: " + resultadoConsulta.getNumConta() + "\nNome: "
-						+ resultadoConsulta.getNomeCliente() + "\nCPF: " + resultadoConsulta.getCpf() + "\nTipo: "
-						+ resultadoConsulta.getTipoConta() + "\nSaldo: " + resultadoConsulta.getSaldo());
 			}
-
+			else {
+				System.out.println("Numero: "+resultadoConsulta.getNumConta()+"\nNome: "+resultadoConsulta.getNomeCliente()+
+						"\nCPF: "+resultadoConsulta.getCpf()+"\nTipo: "+resultadoConsulta.getTipoConta()+
+						"\nSaldo: "+resultadoConsulta.getSaldo());
+			}
+			
 			break;
 
 		case 3:
@@ -54,25 +54,14 @@ public class BancoClient {
 			String senha = ler.next();
 			System.out.println("Valor do saque");
 			float valorSaque = ler.nextFloat();
-
-			conta = proxy.consultarConta(numConta);
-			if (conta == null) {
-				System.out.println("conta não existe");
-				break;
-			} else {
-				if (!conta.getSenha().equals(senha)) {
-					System.out.println("senha errada");
-					break;
-				} else if (conta.getSaldo() < valorSaque) {
-					System.out.println("Saldo insuficiente, saldo disponivel: " + conta.getSaldo());
-					break;
-				}
-			}
-
 			String resultadoSaque = proxy.realizarSaque(numConta, senha, valorSaque);
-			System.out.println("Novo saldo: " + resultadoSaque + " reais");
+			if(resultadoSaque == null) {
+				System.out.println("Informação errada");
+			}
+			else{
+				System.out.println("Novo saldo: "+resultadoSaque+" reais");
+			}
 			break;
-
 		case 4:
 			System.out.println("Numero da conta");
 			String numConta2 = ler.next();
@@ -80,18 +69,13 @@ public class BancoClient {
 			String senha2 = ler.next();
 			System.out.println("Valor do deposito");
 			float valorDeposito = ler.nextFloat();
-			conta = proxy.consultarConta(numConta2);
-			if (conta == null) {
-				System.out.println("conta não existe");
-				break;
-			} else {
-				if (!conta.getSenha().equals(senha2)) {
-					System.out.println("senha errada");
-					break;
-				}
-			}
 			String resultadoDeposito = proxy.realizarDeposito(numConta2, senha2, valorDeposito);
-			System.out.println("Novo saldo: " + resultadoDeposito + " reais");
+			if(resultadoDeposito == null) {
+				System.out.println("Informação errada");
+			}
+			else{
+				System.out.println("Novo saldo: "+resultadoDeposito+" reais");
+			}
 			break;
 
 		case 0:

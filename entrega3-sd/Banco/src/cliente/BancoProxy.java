@@ -3,8 +3,6 @@ package cliente;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
@@ -84,7 +82,7 @@ public class BancoProxy {
 		}
 		return obj.toString();
 	}
-
+	
 	public String realizarDeposito(String numConta, String senha, float varlorDeposito) throws IOException {
 
 		InfoSaque infoSaque = new InfoSaque();
@@ -107,24 +105,13 @@ public class BancoProxy {
 	public byte[] doOperation(String objectRef, String method, byte[] args) throws IOException {
 
 		byte[] data = empacotaMensagem(objectRef, method, args);
-		byte[] respostaCompac = null;
-		Mensagem resposta = null;
-		boolean flagContole = true;
-		
-		while(flagContole) {
-			// envio
-			udpClient.sendRequest(data);
-			// recebimento
-			try {
-				respostaCompac = udpClient.getReplay();
-				flagContole = false;
-				resposta = desempacotaMensagem(respostaCompac);
-			} catch (SocketTimeoutException e) {
-				System.out.println("tempo de envio expirado");
-			}
-			
-		}
-		contMessageId++;
+
+		// envio
+		udpClient.sendRequest(data);
+
+		// recebimento
+		Mensagem resposta = desempacotaMensagem(udpClient.getReplay());
+
 		return resposta.getArgs();
 	}
 
@@ -143,6 +130,7 @@ public class BancoProxy {
 		msg.setArgs(args);
 		String msgJson = gson.toJson(msg);
 		byte[] msgEmpac = msgJson.toString().getBytes("utf-8");
+		contMessageId++;
 		return msgEmpac;
 
 	}

@@ -10,8 +10,6 @@ import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Stack;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
@@ -23,9 +21,9 @@ public class UDPServer {
 	static DatagramSocket aSocket = null;
 	static Gson gson = new Gson();
 
-	public static void main(String args[]) throws InterruptedException {
+	public static void main(String args[]) {
 		BancoDespachante despachante = new BancoDespachante();
-		Stack<Mensagem> historicoMsg = new Stack<Mensagem>();
+
 		try {
 			aSocket = new DatagramSocket(7896);
 			// create socket at agreed port
@@ -34,30 +32,15 @@ public class UDPServer {
 				DatagramPacket request = new DatagramPacket(buffer, buffer.length);
 				aSocket.receive(request);
 				Mensagem requisicao = desempacotaRequisicao(request.getData());
-				
-				//Thread.sleep(1500);
-				
-				if (historicoMsg.empty()) {
-					historicoMsg.push(requisicao);
-					byte[] resultado = despachante.selecionaEqueleto(requisicao);
-
-					byte[] resultadoEmpac = empacotaResposta(resultado, requisicao.getRequestId());
-					DatagramPacket reply = new DatagramPacket(resultadoEmpac, resultadoEmpac.length,
-							request.getAddress(), request.getPort());
-					aSocket.send(reply);
-					
-				} else if (historicoMsg.peek().getRequestId() != requisicao.getRequestId()) {
-					historicoMsg.pop();
-					byte[] resultado = despachante.selecionaEqueleto(requisicao);
-
-					byte[] resultadoEmpac = empacotaResposta(resultado, requisicao.getRequestId());
-					DatagramPacket reply = new DatagramPacket(resultadoEmpac, resultadoEmpac.length,
-							request.getAddress(), request.getPort());
-					aSocket.send(reply);
-				}
-				else if(historicoMsg.peek().getRequestId() == requisicao.getRequestId()) {
-					System.out.println("msg duplicada");
-				}
+				byte[] resultado = despachante.selecionaEqueleto(requisicao);
+				byte[] resultadoEmpac = empacotaResposta(resultado, requisicao.getRequestId());
+				DatagramPacket reply = new DatagramPacket(resultadoEmpac, resultadoEmpac.length, 
+	    		request.getAddress(), request.getPort());
+	    		aSocket.send(reply);
+				// DatagramPacket reply = new DatagramPacket(request.getData(),
+				// request.getLength(), request.getAddress(),
+				// request.getPort());
+				// aSocket.send(reply);
 			}
 		} catch (SocketException e) {
 			System.out.println("Socket: " + e.getMessage());
@@ -77,7 +60,7 @@ public class UDPServer {
 
 	public static Mensagem desempacotaRequisicao(byte[] array) {
 		// Desempacota mensagem de requisicao
-
+		
 		String str = new String(array, java.nio.charset.StandardCharsets.UTF_8);
 
 		JsonReader reader = new JsonReader(new StringReader(str));
