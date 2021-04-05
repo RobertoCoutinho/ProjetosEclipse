@@ -35,7 +35,7 @@ public class UDPServer {
 				aSocket.receive(request);
 				Mensagem requisicao = desempacotaRequisicao(request.getData());
 				
-				//Thread.sleep(1500);
+				Thread.sleep(1500);
 				
 				if (historicoMsg.empty()) {
 					historicoMsg.push(requisicao);
@@ -56,7 +56,7 @@ public class UDPServer {
 					aSocket.send(reply);
 				}
 				else if(historicoMsg.peek().getRequestId() == requisicao.getRequestId()) {
-					System.out.println("msg duplicada");
+					System.out.println("mensagem duplicada");
 				}
 			}
 		} catch (SocketException e) {
