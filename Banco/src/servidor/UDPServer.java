@@ -19,13 +19,21 @@ import com.google.gson.stream.JsonReader;
 import servidor.Mensagem;
 
 public class UDPServer {
-
+	// contador pra gerar erro a cada 3 execuções
+	static int contFalha = 1;
 	static DatagramSocket aSocket = null;
 	static Gson gson = new Gson();
 
 	public static void main(String args[]) throws InterruptedException {
 		BancoDespachante despachante = new BancoDespachante();
-		Stack<Mensagem> historicoMsg = new Stack<Mensagem>();
+
+		// o tratamento de mensagens duplicadas é feito armazenando as requisições
+		// na pilha historiMsgRecebidas e as respostas na pilha historico Respostas
+		// caso seja identificado que a requisição atual é igual a que esta na pilha
+		// é mandado a resposta que esta na pilha de respostas, não tendo assim
+		// que fazer todo o processamanto.
+		Stack<Mensagem> historicoMsgRecebidas = new Stack<Mensagem>();
+		Stack<DatagramPacket> historicoRespostas = new Stack<DatagramPacket>();
 		try {
 			aSocket = new DatagramSocket(7896);
 			// create socket at agreed port
@@ -34,31 +42,45 @@ public class UDPServer {
 				DatagramPacket request = new DatagramPacket(buffer, buffer.length);
 				aSocket.receive(request);
 				Mensagem requisicao = desempacotaRequisicao(request.getData());
+
 				
-				//gerar erro
-				//Thread.sleep(1500);
-				
-				if (historicoMsg.empty()) {
-					historicoMsg.push(requisicao);
+
+				if (historicoMsgRecebidas.empty()) {
+					historicoMsgRecebidas.push(requisicao);
 					byte[] resultado = despachante.selecionaEqueleto(requisicao);
 
 					byte[] resultadoEmpac = empacotaResposta(resultado, requisicao.getRequestId());
 					DatagramPacket reply = new DatagramPacket(resultadoEmpac, resultadoEmpac.length,
 							request.getAddress(), request.getPort());
-					aSocket.send(reply);
-					
-				} else if (historicoMsg.peek().getRequestId() != requisicao.getRequestId()) {
-					historicoMsg.pop();
+					historicoRespostas.push(reply);
+					if (contFalha % 3 != 0) {
+						aSocket.send(reply);
+					}
+
+				} else if (historicoMsgRecebidas.peek().getRequestId() != requisicao.getRequestId()) {
+					historicoMsgRecebidas.pop();
+					historicoMsgRecebidas.push(requisicao);
 					byte[] resultado = despachante.selecionaEqueleto(requisicao);
 
 					byte[] resultadoEmpac = empacotaResposta(resultado, requisicao.getRequestId());
 					DatagramPacket reply = new DatagramPacket(resultadoEmpac, resultadoEmpac.length,
 							request.getAddress(), request.getPort());
-					aSocket.send(reply);
-				}
-				else if(historicoMsg.peek().getRequestId() == requisicao.getRequestId()) {
+					historicoRespostas.pop();
+					historicoRespostas.push(reply);
+						if (contFalha % 3 != 0) {
+							aSocket.send(reply);
+						}
+				} else if (historicoMsgRecebidas.peek().getRequestId() == requisicao.getRequestId()) {
 					System.out.println("mensagem duplicada");
+					
+					// correção de erro notado durante apresentação
+					if (contFalha % 3 != 0) {
+						aSocket.send(historicoRespostas.peek());
+					}
+					contFalha--;
 				}
+				System.out.println(contFalha);
+				contFalha++;
 			}
 		} catch (SocketException e) {
 			System.out.println("Socket: " + e.getMessage());
