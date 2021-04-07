@@ -30,9 +30,9 @@ public class UDPClient {
 	}
 
 	public void sendRequest(byte[] requisicao) {
-		String str = new String(requisicao, java.nio.charset.StandardCharsets.UTF_8);
+		
 		byte[] m = requisicao;
-		DatagramPacket request = new DatagramPacket(m, str.length(), aHost, serverPort);
+		DatagramPacket request = new DatagramPacket(m, m.length, aHost, serverPort);
 		try {
 			aSocket.send(request);
 		} catch (IOException e) {

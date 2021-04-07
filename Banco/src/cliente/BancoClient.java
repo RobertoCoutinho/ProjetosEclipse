@@ -115,12 +115,12 @@ public class BancoClient {
 	}
 
 	public static void main(String[] args) {
-		BancoClient bookClient = new BancoClient();
+		BancoClient bancoClient = new BancoClient();
 		int operacao = -1;
 		do {
-			bookClient.printMenu();
+			bancoClient.printMenu();
 			try {
-				operacao = bookClient.selecionaOperacao();
+				operacao = bancoClient.selecionaOperacao();
 			} catch (IOException ex) {
 				System.out.println("Escolha uma das operações pelo número");
 			}

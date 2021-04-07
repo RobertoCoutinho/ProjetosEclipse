@@ -35,7 +35,8 @@ public class UDPServer {
 				aSocket.receive(request);
 				Mensagem requisicao = desempacotaRequisicao(request.getData());
 				
-				Thread.sleep(1500);
+				//gerar erro
+				//Thread.sleep(1500);
 				
 				if (historicoMsg.empty()) {
 					historicoMsg.push(requisicao);
@@ -97,22 +98,4 @@ public class UDPServer {
 		return msgEmpac;
 	}
 
-	// public void sendReply(byte[] resposta) {
-	// enviado via moodle
-	// }
-
-	// public void run() {
-	// Loop para intergair com socket client - TCP Permanente
-	// while (clientSocket.isConnected()) {
-
-	// byte[] resultado = despachante.selecionaEqueleto(requisicao);
-	// sendReply(empacotaResposta(resultado, requisicao.getRequestId()));
-	// }
-	// try {
-	// clientSocket.close();
-	// } catch (IOException e) {
-	// TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	// }
 }
